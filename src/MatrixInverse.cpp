@@ -8,34 +8,28 @@
 #include <cstring>
 #include "Matrix/Matrix.hpp"
 
-// Block size for cache optimization (L1 cache friendly)
-constexpr int BLOCK_SIZE = 64;
+// =========================================================
+// ORTAK LU ÇEKİRDEĞİ
+// ---------------------------------------------------------
+// lu_decompose() ile Inverse() bu tek implementasyonu paylaşır
+// (kod tekrarını önler). A = P*L*U ayrıştırmasını tek bir LU
+// tamponunda yapar: alt üçgen L çarpanlarını, üst (köşegen dahil)
+// U'yu tutar. pivot[] ise uygulanan satır takaslarını kaydeder.
+// Dönüş değeri false = matris tekil (singular).
+// =========================================================
+bool Matrix::luDecomposeCore(const std::vector<double>& src, int n,
+                             std::vector<double>& LU, std::vector<int>& pivot) {
+    LU.resize((size_t)n * n);
+    pivot.resize(n);
 
-Matrix Matrix::Inverse() const {
-    // 1. Kare matris kontrolü
-    if (this->cols != this->rows) {
-        throw std::invalid_argument("Hata: Sadece kare matrislerin tersi alinabilir!");
-    }
-
-    const int n = this->rows;
-
-    // 2. Çalışma alanı ayır (Cache-friendly tek allocation)
-    std::vector<double> LU(n * n);
-    std::vector<int> pivot(n);
-    std::vector<double> result(n * n, 0.0);
-
-    // 3. Matrisi kopyala (döngü yerine blok memcpy - daha hızlı)
-    std::memcpy(LU.data(), this->data.data(), (size_t)n * n * sizeof(double));
-
-    // ============================================
-    // PHASE 1: LU DECOMPOSITION (Doolittle Algorithm)
-    // A = P * L * U (P = Permutation, L = Lower, U = Upper)
-    // Bu Gauss-Jordan'dan ~2x daha hızlı!
-    // ============================================
+    // Kaynak matrisi çalışma tamponuna al (blok memcpy - cache dostu)
+    std::memcpy(LU.data(), src.data(), (size_t)n * n * sizeof(double));
 
     for (int i = 0; i < n; ++i) {
         pivot[i] = i;
     }
+
+    bool ok = true;
 
     for (int k = 0; k < n; ++k) {
         // Partial pivoting - en büyük elemanı bul
@@ -51,14 +45,15 @@ Matrix Matrix::Inverse() const {
         }
 
         if (maxVal < 1e-12) {
-            throw std::runtime_error("Hata: Matris tekil (singular), tersi alinamaz!");
+            ok = false; // Teğil: işareti, elimasyona devam etme
+            continue;
         }
 
         // Satır takası
         if (maxRow != k) {
             std::swap(pivot[k], pivot[maxRow]);
-            double* row_k = &LU[k * n];
-            double* row_max = &LU[maxRow * n];
+            double* row_k = &LU[(size_t)k * n];
+            double* row_max = &LU[(size_t)maxRow * n];
 
             for (int j = 0; j < n; ++j) {
                 std::swap(row_k[j], row_max[j]);
@@ -88,19 +83,35 @@ Matrix Matrix::Inverse() const {
         }
     }
 
+    return ok;
+}
+
+Matrix Matrix::Inverse() const {
+    // 1. Kare matris kontrolü
+    if (this->cols != this->rows) {
+        throw std::invalid_argument("Hata: Sadece kare matrislerin tersi alinabilir!");
+    }
+
+    const int n = this->rows;
+
+    // 2. Çalışma alanı + ortak LU ayrıştırması (lu_decompose ile paylaşılır)
+    std::vector<double> LU;
+    std::vector<int> pivot;
+    std::vector<double> result((size_t)n * n, 0.0);
+
+    if (!luDecomposeCore(this->data, n, LU, pivot)) {
+        throw std::runtime_error("Hata: Matris tekil (singular), tersi alinamaz!");
+    }
+
     // ============================================
     // PHASE 2: FORWARD & BACKWARD SUBSTITUTION
     // Her sütun için ayrı ayrı çöz.
-    // Performans: b/y/x tamponlarını döngü dışına çekerek
-    // gereksiz n× allocation maliyetinden kurtulduk.
+    // Performans: b/y/x tamponları döngü öncesi bir kez ayrılır.
     // ============================================
-
-    // Tek seferlik çalışma tamponları (her sütun için yeniden yok!)
     std::vector<double> b(n);
     std::vector<double> y(n);
     std::vector<double> x(n);
 
-    // Her sütunu çöz
     for (int col = 0; col < n; ++col) {
         std::fill(b.begin(), b.end(), 0.0);
         b[pivot[col]] = 1.0; // Permutation uygulanmış birim vektör
@@ -108,7 +119,7 @@ Matrix Matrix::Inverse() const {
         // Forward substitution: L * y = b
         for (int i = 0; i < n; ++i) {
             double sum = 0.0;
-            const double* lu_row = &LU[i * n];
+            const double* lu_row = &LU[(size_t)i * n];
             for (int j = 0; j < i; ++j) {
                 sum += lu_row[j] * y[j];
             }
@@ -118,7 +129,7 @@ Matrix Matrix::Inverse() const {
         // Backward substitution: U * x = y
         for (int i = n - 1; i >= 0; --i) {
             double sum = 0.0;
-            const double* lu_row = &LU[i * n];
+            const double* lu_row = &LU[(size_t)i * n];
             for (int j = i + 1; j < n; ++j) {
                 sum += lu_row[j] * x[j];
             }
@@ -127,14 +138,12 @@ Matrix Matrix::Inverse() const {
 
         // Sonucu sütun olarak yerleştir
         for (int i = 0; i < n; ++i) {
-            result[i * n + col] = x[i];
+            result[(size_t)i * n + col] = x[i];
         }
     }
 
     // ============================================
-    // PHASE 3: Sonucu Matrix nesnesine taşı
-    // result ve inv satır-major ardışık olduğu için
-    // tek blok memcpy yeterlidir (en hızlı kopya).
+    // PHASE 3: Sonucu Matrix nesnesine taşı (tek blok memcpy)
     // ============================================
     Matrix inv(n, n);
     std::memcpy(inv.data.data(), result.data(), (size_t)n * n * sizeof(double));

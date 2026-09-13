@@ -22,14 +22,14 @@ void Matrix::setIdentity() {
         throw std::invalid_argument("Birim matris sadece kare matrislerde oluşturulabilir!");
     }
 
-    std::fill(data.begin(), data.end(), 0.0f);
+    std::fill(data.begin(), data.end(), 0.0);
     for (int index = 0; index < rows; ++index) {
-        data[index * cols + index] = 1.0f;
+        data[index * cols + index] = 1.0;
     }
 }
 
 void Matrix::zero() {
-    std::fill(data.begin(), data.end(), 0.0f);
+    std::fill(data.begin(), data.end(), 0.0);
 }
 
 Matrix Matrix::zeros(int rows, int cols) {

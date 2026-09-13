@@ -5,62 +5,43 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <vector>
 
 LUDecomposition Matrix::lu_decompose() const {
     if (!isSquare()) throw std::invalid_argument("Hata: LU sadece kare matrisler icin!");
 
     int n = this->rows;
-    Matrix L = Matrix::identity(n); // Köşegeni 1 olan birim matris
-    Matrix U = this->clone();       // Başlangıçta U = A
-    Matrix P = Matrix::identity(n); // Permütasyon matrisi
 
-    // at() sınır kontrolünü iç döngüde tekrar etmemek için ham pointer'lar
+    // Ortak LU çekirdeği (Inverse() ile aynı implementasyonu paylaşır)
+    std::vector<double> LU;
+    std::vector<int> pivot;
+    Matrix::luDecomposeCore(this->data, n, LU, pivot);
+
+    // Combined LU tamponundan L, U ve P'yi kur
+    Matrix L = Matrix::zeros(n, n);   // birim köşegen + alt çarpanlar
+    Matrix U = Matrix::zeros(n, n);   // üst üçgen (köşegen dahil)
+    Matrix P = Matrix::zeros(n, n);   // permütasyon matrisi
+
     double* Ld = L.data.data();
     double* Ud = U.data.data();
     double* Pd = P.data.data();
-    const int stride = n;
 
-    for (int k = 0; k < n - 1; ++k) {
-        // Partial Pivoting
-        int maxRow = k;
-        double maxVal = std::abs(Ud[k * stride + k]);
-        for (int i = k + 1; i < n; ++i) {
-            double v = std::abs(Ud[i * stride + k]);
-            if (v > maxVal) {
-                maxVal = v;
-                maxRow = i;
-            }
-        }
+    for (int i = 0; i < n; ++i) {
+        const double* lu_row = &LU[(size_t)i * n];
+        double* Lrow = &Ld[(size_t)i * n];
+        double* Urow = &Ud[(size_t)i * n];
 
-        if (maxVal < 1e-12) continue; // Tekil matris, atla
-
-        if (maxRow != k) {
-            // U, L ve P'nin k. satırından sonrasını takas et
-            double* uk = &Ud[k * stride];
-            double* um = &Ud[maxRow * stride];
-            for (int j = k; j < n; ++j) std::swap(uk[j], um[j]);
-
-            double* lk = &Ld[k * stride];
-            double* lm = &Ld[maxRow * stride];
-            for (int j = 0; j < k; ++j) std::swap(lk[j], lm[j]);
-
-            double* pk = &Pd[k * stride];
-            double* pm = &Pd[maxRow * stride];
-            for (int j = 0; j < n; ++j) std::swap(pk[j], pm[j]);
-        }
-
-        // Eliminasyon
-        double inv_piv = 1.0 / Ud[k * stride + k]; // bölme yerine çarpma
-        double* uk = &Ud[k * stride];
-
-        for (int i = k + 1; i < n; ++i) {
-            double factor = Ud[i * stride + k] * inv_piv;
-            Ld[i * stride + k] = factor;
-            double* ui = &Ud[i * stride];
-            for (int j = k; j < n; ++j) {
-                ui[j] -= factor * uk[j];
-            }
+        for (int j = 0; j < n; ++j) {
+            if (j < i)      { Lrow[j] = lu_row[j]; Urow[j] = 0.0; } // L: alt
+            else if (j > i) { Lrow[j] = 0.0;        Urow[j] = lu_row[j]; } // U: üst
+            else            { Lrow[j] = 1.0;        Urow[j] = lu_row[j]; } // köşegen (L=1, U=pivot)
         }
     }
+
+    // P: pivot takas sırasını yansıtır -> P[i][pivot[i]] = 1
+    for (int i = 0; i < n; ++i) {
+        Pd[(size_t)i * n + pivot[i]] = 1.0;
+    }
+
     return {L, U, P};
 }

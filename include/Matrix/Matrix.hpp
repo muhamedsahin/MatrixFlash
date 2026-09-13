@@ -16,6 +16,12 @@ private:
 
     bool isValidIndex(int row_num, int col_num) const;
 
+    // Ortak LU çekirdeği: lu_decompose() ile Inverse() aynı LU mantığını
+    // paylaşır. false dönerse matris tekil (singular) demektir;
+    // LU (birleşik L+U) ve pivot sonucu referans parametrelere yazılır.
+    static bool luDecomposeCore(const std::vector<double>& src, int n,
+                                std::vector<double>& LU, std::vector<int>& pivot);
+
 public:
     // ==========================================
     // 1. YAPICILAR (CONSTRUCTORS)

@@ -21,14 +21,14 @@ double Matrix::mean() const {
 double Matrix::l1_norm() const {
     return std::transform_reduce(
         data.begin(), data.end(), 0.0, std::plus<>(),
-        [](float value) { return std::abs(value); }
+        [](double value) { return std::abs(value); }
     );
 }
 
 double Matrix::l2_norm() const {
     double sum_squared = std::transform_reduce(
         data.begin(), data.end(), 0.0, std::plus<>(),
-        [](float value) { return static_cast<double>(value) * value; }
+        [](double value) { return value * value; }
     );
     return std::sqrt(sum_squared);
 }
