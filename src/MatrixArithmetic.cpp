@@ -42,6 +42,15 @@ Matrix Matrix::multiply(const Matrix& other) const {
     return result;
 }
 
+Matrix Matrix::multiplyScalar(double scalar) const {
+    Matrix result(rows, cols);
+    const size_t count = data.size();
+    for (size_t index = 0; index < count; ++index) {
+        result.data[index] = data[index] * scalar;
+    }
+    return result;
+}
+
 Matrix Matrix::add(const Matrix& other) const {
     if (rows != other.rows || cols != other.cols) {
         throw std::invalid_argument("Matris toplama için boyutlar tam olarak eşit olmalı!");

@@ -29,10 +29,8 @@ bool Matrix::luDecomposeCore(const std::vector<double>& src, int n,
         pivot[i] = i;
     }
 
-    bool ok = true;
-
     for (int k = 0; k < n; ++k) {
-        // Partial pivoting - en büyük elemanı bul
+        // Önceki eliminasyonlardan güncellenmiş sütunda partial pivoting yap.
         double maxVal = 0.0;
         int maxRow = k;
 
@@ -45,8 +43,7 @@ bool Matrix::luDecomposeCore(const std::vector<double>& src, int n,
         }
 
         if (maxVal < 1e-12) {
-            ok = false; // Teğil: işareti, elimasyona devam etme
-            continue;
+            return false;
         }
 
         // Satır takası
@@ -60,30 +57,16 @@ bool Matrix::luDecomposeCore(const std::vector<double>& src, int n,
             }
         }
 
-        // U matrisinin k. satırını hesapla
-        for (int j = k; j < n; ++j) {
-            double sum = 0.0;
-            for (int p = 0; p < k; ++p) {
-                sum += LU[k * n + p] * LU[p * n + j];
-            }
-            LU[k * n + j] -= sum;
-        }
-
-        // L matrisinin k. sütununu hesapla
-        if (k < n - 1) {
-            double inv_pivot = 1.0 / LU[k * n + k];
-
-            for (int i = k + 1; i < n; ++i) {
-                double sum = 0.0;
-                for (int p = 0; p < k; ++p) {
-                    sum += LU[i * n + p] * LU[p * n + k];
-                }
-                LU[i * n + k] = (LU[i * n + k] - sum) * inv_pivot;
+        // L çarpanlarını ve Schur güncellemesini birlikte uygula.
+        for (int i = k + 1; i < n; ++i) {
+            LU[i * n + k] /= LU[k * n + k];
+            for (int j = k + 1; j < n; ++j) {
+                LU[i * n + j] -= LU[i * n + k] * LU[k * n + j];
             }
         }
     }
 
-    return ok;
+    return true;
 }
 
 Matrix Matrix::Inverse() const {

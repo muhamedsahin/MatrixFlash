@@ -27,14 +27,22 @@ Matrix Matrix::loadBinary(const std::string& filename) {
 
     int r, c;
     // 1. Başlığı oku
-    file.read(reinterpret_cast<char*>(&r), sizeof(int));
-    file.read(reinterpret_cast<char*>(&c), sizeof(int));
+    if (!file.read(reinterpret_cast<char*>(&r), sizeof(int)) ||
+        !file.read(reinterpret_cast<char*>(&c), sizeof(int))) {
+        throw std::runtime_error("Matris dosyasi basligi bozuk: " + filename);
+    }
+    if (r < 0 || c < 0) {
+        throw std::runtime_error("Matris dosyasinda gecersiz boyut: " + filename);
+    }
 
     // 2. Yeni matrisi oluştur
     Matrix result(r, c);
 
     // 3. Ham veriyi doğrudan vector'ün içine oku
-    file.read(reinterpret_cast<char*>(result.data.data()), result.data.size() * sizeof(double));
+    if (!file.read(reinterpret_cast<char*>(result.data.data()),
+                   static_cast<std::streamsize>(result.data.size() * sizeof(double)))) {
+        throw std::runtime_error("Matris verisi eksik veya bozuk: " + filename);
+    }
 
     file.close();
     return result;

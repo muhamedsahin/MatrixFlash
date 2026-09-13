@@ -15,7 +15,9 @@ LUDecomposition Matrix::lu_decompose() const {
     // Ortak LU çekirdeği (Inverse() ile aynı implementasyonu paylaşır)
     std::vector<double> LU;
     std::vector<int> pivot;
-    Matrix::luDecomposeCore(this->data, n, LU, pivot);
+    if (!Matrix::luDecomposeCore(this->data, n, LU, pivot)) {
+        throw std::runtime_error("Hata: Matris tekil (singular), LU ayrıştırılamaz!");
+    }
 
     // Combined LU tamponundan L, U ve P'yi kur
     Matrix L = Matrix::zeros(n, n);   // birim köşegen + alt çarpanlar

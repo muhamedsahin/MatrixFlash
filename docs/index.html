@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MatrixFlash, C++17 ile yazılmış CPU odaklı matris kütüphanesi. Yapay zeka, lineer cebir ve performanslı matris işlemlerini öğrenin.">
+  <meta name="keywords" content="MatrixFlash, C++ matris kütüphanesi, lineer cebir, yapay zeka, C++17, matris matematiği, API dokümantasyonu">
+  <meta name="author" content="Muhammed Fatih Şahin">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="MatrixFlash Docs | Matrisleri kodla, mantığını kavra">
+  <meta property="og:description" content="MatrixFlash API'sini, matris matematiğini ve C++17 kullanım örneklerini keşfedin.">
+  <meta property="og:site_name" content="MatrixFlash">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="MatrixFlash Docs">
+  <meta name="twitter:description" content="C++17 matris kütüphanesini öğrenmek için etkileşimli dokümantasyon.">
+  <meta name="theme-color" content="#101714">
+  <title>MatrixFlash Docs | Matrisleri kodla, mantığını kavra</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "MatrixFlash C++ Matris Kütüphanesi Dokümantasyonu",
+    "description": "MatrixFlash API kullanımı, lineer cebir ve yapay zeka matris işlemleri için kapsamlı dokümantasyon.",
+    "inLanguage": "tr-TR",
+    "about": { "@type": "SoftwareApplication", "name": "MatrixFlash", "applicationCategory": "DeveloperApplication" },
+    "author": { "@type": "Person", "name": "Muhammed Fatih Şahin" }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="MatrixFlash ana sayfa">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>Matrix<span>Flash</span></span>
+      </a>
+      <div class="topbar-meta"><span class="status-dot"></span> C++17 · CPU-first · MIT</div>
+      <button class="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false">☰</button>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="side-label">Dokümantasyon</div>
+        <nav class="side-nav" aria-label="Dokümantasyon menüsü">
+          <a class="nav-link active" href="#home"><span class="nav-number">00</span> Genel bakış</a>
+          <a class="nav-link" href="#get-started"><span class="nav-number">01</span> Get Started</a>
+          <a class="nav-link" href="#mental-model"><span class="nav-number">02</span> Matris mantığı</a>
+          <a class="nav-link" href="#math"><span class="nav-number">03</span> Matematik rehberi</a>
+          <a class="nav-link" href="#api"><span class="nav-number">04</span> API referansı</a>
+          <a class="nav-link" href="#examples"><span class="nav-number">05</span> Tarifler</a>
+          <a class="nav-link" href="lesson-01.html"><span class="nav-number">40</span> Tam müfredat</a>
+        </nav>
+        <div class="side-bottom">
+          <div class="side-label">Hızlı arama</div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Fonksiyon ara..." autocomplete="off">
+            <kbd>/</kbd>
+          </label>
+          <a class="source-link" href="../include/Matrix/Matrix.hpp">↗ Header'ı aç</a>
+          <a class="source-link" href="../README.md">↗ README'yi aç</a>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <section class="hero page-section" id="home" data-page="home">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-line"></span> Öğren · üret · hızlandır</p>
+            <h1>Matrisleri sadece<br><em>kullanma.</em> Kavra.</h1>
+            <p class="hero-lede">MatrixFlash, C++17 ile sıfırdan yazılmış küçük bir matris kütüphanesi. Bu dokümantasyon, her fonksiyonun ne yaptığını ve arkasındaki lineer cebiri aynı yerde anlatır.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#get-started">Hemen başla <span>→</span></a>
+              <a class="button button-quiet" href="#api">API'yi keşfet <span>⌘</span></a>
+              <a class="button button-quiet" href="lesson-01.html">40 derse gir <span>↗</span></a>
+            </div>
+            <div class="hero-facts">
+              <div><strong>17+</strong><span>işlem ailesi</span></div>
+              <div><strong>0</strong><span>harici matematik bağımlılığı</span></div>
+              <div><strong>1D</strong><span>cache-dostu veri deposu</span></div>
+            </div>
+          </div>
+          <div class="hero-art" aria-label="MatrixFlash veri akışı görselleştirmesi">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="matrix-card matrix-card-back"><span>0.12</span><span>-0.42</span><span>0.88</span><span>1.00</span></div>
+            <div class="matrix-card matrix-card-front">
+              <div class="matrix-card-head"><span>Ağırlık matrisi</span><b>2 × 3</b></div>
+              <div class="matrix-grid"><span>0.8</span><span>-0.2</span><span>0.4</span><span>1.3</span><span>0.0</span><span>-0.7</span></div>
+              <div class="matrix-card-foot"><span class="pulse"></span> row-major bellek</div>
+            </div>
+            <div class="hero-sticker">A × B<br><strong>= C</strong></div>
+          </div>
+        </section>
+
+        <section class="section-intro page-section" id="get-started" data-page="get-started">
+          <div class="section-kicker">01 / İlk temas</div>
+          <h2>Beş dakikada çalışan<br><span>ilk matrisin.</span></h2>
+          <p class="section-lede">MatrixFlash'ın temel fikri basit: bir matrisi oluştur, veriyi doldur, işlemi çağır. Gerisini kütüphanenin boyut kontrolleri ve cache-dostu iç yapısı halleder.</p>
+          <div class="step-grid">
+            <article class="step-card"><div class="step-top"><span>01</span><span class="step-icon">◇</span></div><h3>Projeye bağla</h3><p>Public header'ı include et ve CMake hedefini MatrixLib'e bağla.</p><pre><code>#include "Matrix/Matrix.hpp"
+
+Matrix input(2, 3);</code><button class="copy-button" type="button" data-copy="#include &quot;Matrix/Matrix.hpp&quot;\n\nMatrix input(2, 3);">kopyala</button></pre></article>
+            <article class="step-card"><div class="step-top"><span>02</span><span class="step-icon">＋</span></div><h3>Veriyi yerleştir</h3><p><code>at(row, col)</code> ile hücrelere eriş. İndeksler sıfırdan başlar.</p><pre><code>input.at(0, 0) = 1.0;
+input.at(0, 1) = 2.0;
+input.at(1, 0) = 3.0;</code><button class="copy-button" type="button" data-copy="input.at(0, 0) = 1.0;\ninput.at(0, 1) = 2.0;\ninput.at(1, 0) = 3.0;">kopyala</button></pre></article>
+            <article class="step-card"><div class="step-top"><span>03</span><span class="step-icon">↗</span></div><h3>İşlemi çalıştır</h3><p>Yeni bir matris döndüren işlemleri zincirleyerek akışı kur.</p><pre><code>Matrix weights = Matrix::ones(3, 2);
+Matrix output = input.multiply(weights);
+output.relu();</code><button class="copy-button" type="button" data-copy="Matrix weights = Matrix::ones(3, 2);\nMatrix output = input.multiply(weights);\noutput.relu();">kopyala</button></pre></article>
+          </div>
+          <div class="callout"><span class="callout-mark">!</span><p><strong>Boyutları baştan düşün.</strong> Matris çarpımında sol matrisin sütun sayısı, sağ matrisin satır sayısına eşit olmalı: <code>(m × n) · (n × p) = (m × p)</code>.</p></div>
+        </section>
+
+        <section class="split-section page-section" id="mental-model" data-page="mental-model">
+          <div class="section-kicker">02 / Zihinsel model</div>
+          <div class="split-heading"><h2>Bir matris, aslında<br><span>düz bir veri akışı.</span></h2><p>MatrixFlash veriyi <code>std::vector&lt;double&gt;</code> içinde row-major düzende tutar. İki boyutlu görünüm, indeksleme formülüyle kurulur.</p></div>
+          <div class="model-panel">
+            <div class="model-visual"><div class="axis-label axis-row">satır</div><div class="axis-label axis-col">sütun</div><div class="big-matrix"><span class="highlight">a₀₀</span><span>a₀₁</span><span>a₀₂</span><span>a₁₀</span><span class="highlight">a₁₁</span><span>a₁₂</span></div><div class="memory-flow"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div></div>
+            <div class="model-copy"><p class="mini-label">Adresleme formülü</p><div class="formula-box"><code>index = row × cols + col</code></div><p><code>2 × 3</code> bir matrisin bellekteki sırası şöyledir: <code>[a₀₀, a₀₁, a₀₂, a₁₀, a₁₁, a₁₂]</code>. Bu düzen, satır boyunca ardışık erişimi hızlandırır.</p><ul class="check-list"><li><span>✓</span> Tek boyutlu ve tahmin edilebilir bellek</li><li><span>✓</span> Sıcak döngülerde düşük erişim maliyeti</li><li><span>✓</span> <code>at()</code> sınır kontrolü, iç döngüde ham pointer</li></ul></div>
+          </div>
+        </section>
+
+        <section class="math-section page-section" id="math" data-page="math">
+          <div class="section-kicker">03 / Matematik rehberi</div>
+          <h2>Formülün kodda<br><span>neye dönüştüğünü gör.</span></h2>
+          <div class="math-tabs" role="tablist"><button class="math-tab active" data-tab="multiply" type="button">Çarpım</button><button class="math-tab" data-tab="transpose" type="button">Transpose</button><button class="math-tab" data-tab="relu" type="button">ReLU</button><button class="math-tab" data-tab="softmax" type="button">Softmax</button></div>
+          <div class="math-content" id="tab-multiply"><div class="equation-card"><div class="equation-label">Matris çarpımı</div><div class="equation"><span class="eq-matrix">a₁₁ a₁₂<br>a₂₁ a₂₂</span><b>×</b><span class="eq-matrix">b₁₁ b₁₂<br>b₂₁ b₂₂</span><b>=</b><span class="eq-matrix accent-eq">a₁₁b₁₁+a₁₂b₂₁<br>a₂₁b₁₁+a₂₂b₂₁</span></div><p>Her sonuç hücresi, sol matrisin satırı ile sağ matrisin sütununun noktasal çarpımıdır. Kodda dış döngü satırı, orta döngü ortak boyutu, iç döngü sonucu gezer.</p></div><div class="interactive-card"><div class="card-top"><span>Canlı hesapla</span><span class="live-badge"><i></i> JS playground</span></div><div class="playground-inputs"><div><label>A <small>2 × 2</small></label><input class="matrix-input" id="a00" value="1"><input class="matrix-input" id="a01" value="2"><input class="matrix-input" id="a10" value="3"><input class="matrix-input" id="a11" value="4"></div><span class="operator">×</span><div><label>B <small>2 × 2</small></label><input class="matrix-input" id="b00" value="5"><input class="matrix-input" id="b01" value="6"><input class="matrix-input" id="b10" value="7"><input class="matrix-input" id="b11" value="8"></div></div><button class="button button-small" id="calculateMatrix" type="button">Sonucu hesapla <span>→</span></button><div class="result-output" id="matrixResult">[ 19, 22 ]<br>[ 43, 50 ]</div></div></div>
+          <div class="math-content hidden" id="tab-transpose"><div class="concept-wide"><div class="concept-symbol">A<sup>T</sup></div><div><h3>Satırları sütunlara çevir</h3><p>Transpose, <code>(m × n)</code> matrisi <code>(n × m)</code> matrise dönüştürür. <code>result[col][row] = data[row][col]</code> kuralı, backpropagation ve boyut uyumu için temel araçtır.</p><pre><code>Matrix column = row.transpose();</code></pre></div></div></div>
+          <div class="math-content hidden" id="tab-relu"><div class="concept-wide"><div class="concept-symbol">max(0, x)</div><div><h3>Negatifi sıfırla, sinyali koru</h3><p>ReLU her hücreye bağımsız uygulanır. Negatif değerler 0 olur, pozitifler aynen kalır. Bu basit eşik, yapay sinir ağlarına doğrusal olmayan ifade gücü verir.</p><pre><code>scores.relu(); // yerinde değiştirir</code></pre></div></div></div>
+          <div class="math-content hidden" id="tab-softmax"><div class="concept-wide"><div class="concept-symbol">e<sup>x</sup> / Σe<sup>x</sup></div><div><h3>Skorları olasılığa dönüştür</h3><p>MatrixFlash taşmayı önlemek için her satırdan maksimum değeri çıkarır: <code>exp(x - max)</code>. Ardından toplamına bölerek satırı 1'e normalize eder.</p><pre><code>probabilities.softmax();</code></pre></div></div></div>
+        </section>
+
+        <section class="api-section page-section" id="api" data-page="api">
+          <div class="section-kicker">04 / API referansı</div>
+          <div class="api-heading"><div><h2>Fonksiyonunu bul.<br><span>Bağlamını öğren.</span></h2></div><p>Her public fonksiyon, header'daki imzasıyla ve kütüphanedeki gerçek sorumluluk dosyasıyla eşleşir. Arama kutusunu kullanarak doğrudan bir fonksiyona atla.</p></div>
+          <div class="api-groups">
+            <div class="api-group searchable"><div class="group-title"><span class="group-index">A</span><h3>Kurulum & erişim</h3><span class="group-file">Matrix.cpp</span></div><div class="api-list">
+              <article class="api-row"><code>Matrix(int rows, int cols)</code><div><strong>Matris oluşturur</strong><p>Verilen boyutta, başlangıçta sıfırlarla dolu bir matris üretir. Negatif boyutlar <code>invalid_argument</code> fırlatır.</p></div></article>
+              <article class="api-row"><code>at(row, col)</code><div><strong>Hücreye erişir</strong><p>Hem okunabilir hem yazılabilir referans döndürür. Geçersiz indeksler <code>out_of_range</code> ile yakalanır.</p></div></article>
+              <article class="api-row"><code>row_s() · col_s() · size()</code><div><strong>Boyut bilgisini verir</strong><p>Satır, sütun ve toplam hücre sayısını döndürür. <code>isSquare()</code> kare matris kontrolü yapar.</p></div></article>
+            </div></div>
+            <div class="api-group searchable"><div class="group-title"><span class="group-index">B</span><h3>Aritmetik</h3><span class="group-file">MatrixArithmetic.cpp</span></div><div class="api-list">
+              <article class="api-row"><code>add(other)</code><div><strong>Eleman eleman toplar</strong><p>Boyutları aynı olan iki matrisi toplar ve yeni matris döndürür.</p></div></article>
+              <article class="api-row"><code>subtract(other)</code><div><strong>Eleman eleman çıkarır</strong><p>Her hücrede <code>Aᵢⱼ - Bᵢⱼ</code> hesaplar.</p></div></article>
+              <article class="api-row"><code>multiply(other)</code><div><strong>Matris çarpımı yapar</strong><p><code>(m×n) · (n×p)</code> kuralına uyar. Cache dostu <code>i-k-j</code> döngü düzenini kullanır.</p></div></article>
+              <article class="api-row"><code>multiplyScalar(scalar)</code><div><strong>Skalerle çarpar</strong><p>Learning rate ve gradient güncellemeleri için her hücreyi aynı sayı ile çarpar.</p></div></article>
+              <article class="api-row"><code>elementwiseMultiply(other)</code><div><strong>Hadamard çarpımı yapar</strong><p>Karşılıklı hücreleri çarpar; klasik matris çarpımından farklıdır.</p></div></article>
+            </div></div>
+            <div class="api-group searchable"><div class="group-title"><span class="group-index">C</span><h3>Dönüşümler & aktivasyonlar</h3><span class="group-file">MatrixTransforms.cpp · MatrixActivation.cpp</span></div><div class="api-list">
+              <article class="api-row"><code>transpose()</code><div><strong>Devrik matris döndürür</strong><p>Satır ve sütunları yer değiştirerek yeni bir matris üretir.</p></div></article>
+              <article class="api-row"><code>relu()</code><div><strong>ReLU uygular</strong><p>Matrisi yerinde değiştirir: negatif değerleri 0'a çeker.</p></div></article>
+              <article class="api-row"><code>softmax() · NewSoftMax()</code><div><strong>Olasılık dağılımı üretir</strong><p>İlki yerinde değiştirir, ikincisi kopya döndürür. İşlem satır bazlıdır.</p></div></article>
+              <article class="api-row"><code>flatten()</code><div><strong>Tek satıra indirger</strong><p>Veriyi değiştirmeden boyutu <code>1 × (rows×cols)</code> yapar.</p></div></article>
+              <article class="api-row"><code>randomize(min, max)</code><div><strong>Rastgele başlatır</strong><p>Hücreleri verilen aralıkta uniform dağılımla doldurur.</p></div></article>
+            </div></div>
+            <div class="api-group searchable"><div class="group-title"><span class="group-index">D</span><h3>İleri seviye işlemler</h3><span class="group-file">MatrixInverse.cpp · MatrixDecompose.cpp</span></div><div class="api-list">
+              <article class="api-row"><code>determinant()</code><div><strong>Determinant hesaplar</strong><p>1×1, 2×2, 3×3 için hızlı formüller; büyük matrislerde partial pivoting'li eliminasyon kullanır.</p></div></article>
+              <article class="api-row"><code>Inverse()</code><div><strong>Ters matrisi döndürür</strong><p>LU ayrıştırması ve ileri/geri yerine koyma ile çalışır. Kare ve tekil olmayan matris ister.</p></div></article>
+              <article class="api-row"><code>lu_decompose()</code><div><strong>L, U, P döndürür</strong><p><code>P·A = L·U</code> ayrışımını üretir. Tekil matrislerde hata verir.</p></div></article>
+              <article class="api-row"><code>power_iteration()</code><div><strong>Baskın özdeğeri bulur</strong><p>Power iteration ile en büyük mutlak özdeğer ve ona ait özvektörü yaklaşıklar.</p></div></article>
+            </div></div>
+            <div class="api-group searchable"><div class="group-title"><span class="group-index">E</span><h3>Birleştirme, yayınlama & dosya</h3><span class="group-file">MatrixMerging.cpp · MatrixBroadcasting.cpp</span></div><div class="api-list">
+              <article class="api-row"><code>slice(r₁, r₂, c₁, c₂)</code><div><strong>Alt matris çıkarır</strong><p>Başlangıç dahil, bitiş hariç aralıkla yeni bir parça döndürür.</p></div></article>
+              <article class="api-row"><code>addBroadcast() · multiplyBroadcast()</code><div><strong>Yayınlayarak işlem yapar</strong><p><code>1×n</code> satır vektörünü tüm satırlara uygular; matris boyutunu büyütmez.</p></div></article>
+              <article class="api-row"><code>saveBinary() · loadBinary()</code><div><strong>Binary saklar / yükler</strong><p>Boyut başlığı ve ham <code>double</code> verisiyle hızlı dosya akışı sağlar.</p></div></article>
+            </div></div>
+          </div>
+        </section>
+
+        <section class="recipes-section page-section" id="examples" data-page="examples">
+          <div class="section-kicker">05 / Uygulama tarifleri</div>
+          <h2>Bilgiyi küçük<br><span>bir projeye taşı.</span></h2>
+          <div class="recipe-grid">
+            <article class="recipe-card recipe-featured"><div class="recipe-meta"><span>AI PIPELINE</span><span>01</span></div><h3>Mini forward pass</h3><p>Girdi, ağırlıklar, bias ve ReLU ile küçük bir sinir ağı katmanı kur.</p><pre><code>Matrix input(1, 3);
+input.randomize();
+
+Matrix weights(3, 2);
+weights.randomize(-0.5, 0.5);
+
+Matrix output = input.multiply(weights);
+output.relu();</code></pre><button class="copy-button" type="button" data-copy="Matrix input(1, 3);\ninput.randomize();\n\nMatrix weights(3, 2);\nweights.randomize(-0.5, 0.5);\n\nMatrix output = input.multiply(weights);\noutput.relu();">kodu kopyala</button></article>
+            <article class="recipe-card"><div class="recipe-meta"><span>GRADIENT DESCENT</span><span>02</span></div><h3>Ağırlık güncelle</h3><p>Öğrenme oranını gradient'e uygula ve ağırlıkları güncelle.</p><pre><code>Matrix step = gradient
+    .multiplyScalar(learningRate);
+weights = weights.subtract(step);</code></pre></article>
+            <article class="recipe-card"><div class="recipe-meta"><span>LINEER CEBİR</span><span>03</span></div><h3>LU ile çözümle</h3><p>Bir matrisin permütasyonlu LU parçalarını incele.</p><pre><code>auto parts = matrix.lu_decompose();
+Matrix left = parts.L;
+Matrix upper = parts.U;
+Matrix permutation = parts.P;</code></pre></article>
+          </div>
+          <div class="footer-cta"><div><span class="eyebrow">Bir sonraki adım</span><h3>Kodu aç. Bir hücreyi değiştir.<br>Sonucu yeniden düşün.</h3></div><a class="button button-primary" href="../examples/ai_pipeline.cpp">Örneği aç <span>↗</span></a></div>
+        </section>
+        <footer class="site-footer"><span>MatrixFlash Docs · C++17 ile öğrenmek için tasarlandı.</span><span>Built from scratch <b>□</b></span></footer>
+      </main>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

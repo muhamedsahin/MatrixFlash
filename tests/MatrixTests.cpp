@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <cstdio>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <stdexcept>
@@ -95,6 +96,7 @@ void test_arithmetic() {
     require_matrix(left.add(right), 2, 2, {2, 3, 4, 5});
     require_matrix(left.subtract(right), 2, 2, {0, 1, 2, 3});
     require_matrix(left.elementwiseMultiply(right), 2, 2, {1, 2, 3, 4});
+    require_matrix(left.multiplyScalar(2.0), 2, 2, {2, 4, 6, 8});
     require_matrix(left.multiply(right), 2, 2, {3, 3, 7, 7});
 
     bool mismatch = false;
@@ -128,6 +130,17 @@ void test_transforms_and_statistics() {
     Matrix flattened = sample_matrix();
     flattened.flatten();
     require_matrix(flattened, 1, 6, {1, 2, 3, 4, 5, 6});
+
+    require_matrix(sample_matrix().transpose(), 3, 2, {1, 4, 2, 5, 3, 6});
+
+    Matrix randomized(4, 4);
+    randomized.randomize(-0.25, 0.25);
+    for (int row = 0; row < randomized.row_s(); ++row) {
+        for (int col = 0; col < randomized.col_s(); ++col) {
+            require(randomized.at(row, col) >= -0.25 && randomized.at(row, col) <= 0.25,
+                    "Rastgele deger aralik disinda");
+        }
+    }
 }
 
 void test_activation() {
@@ -144,6 +157,13 @@ void test_activation() {
         require(std::abs(matrix.at(1, 0) + matrix.at(1, 1) - 1.0) < 1e-6,
             "Softmax taşma güvenliği bozuk");
     require_close(copy.at(0, 0), matrix.at(0, 0), "NewSoftMax sonucu farklı");
+
+    Matrix relu_matrix(1, 3);
+    relu_matrix.at(0, 0) = -2.0;
+    relu_matrix.at(0, 1) = 0.0;
+    relu_matrix.at(0, 2) = 3.0;
+    relu_matrix.relu();
+    require_matrix(relu_matrix, 1, 3, {0, 0, 3});
 }
 
 void test_slice_and_merge() {
@@ -186,6 +206,36 @@ void test_advanced_math() {
     eigen.at(1, 1) = 1;
     auto result = eigen.power_iteration(1000, 1e-8);
     require_close(result.first, 2.0, "Power iteration eigenvalue sonucu farklı");
+
+    Matrix pivoted(2, 2);
+    pivoted.at(0, 0) = 0;
+    pivoted.at(0, 1) = 2;
+    pivoted.at(1, 0) = 1;
+    pivoted.at(1, 1) = 3;
+    LUDecomposition pivoted_lu = pivoted.lu_decompose();
+    require_matrix(pivoted_lu.P.multiply(pivoted), 2, 2, {1, 3, 0, 2});
+    require_matrix(pivoted_lu.L.multiply(pivoted_lu.U), 2, 2, {1, 3, 0, 2});
+
+    Matrix singular(2, 2);
+    singular.at(0, 0) = 1;
+    singular.at(0, 1) = 2;
+    singular.at(1, 0) = 2;
+    singular.at(1, 1) = 4;
+    bool lu_failed = false;
+    try {
+        singular.lu_decompose();
+    } catch (const std::runtime_error&) {
+        lu_failed = true;
+    }
+    require(lu_failed, "Tekil LU ayrıştırması hata üretmedi");
+
+    bool inverse_failed = false;
+    try {
+        singular.Inverse();
+    } catch (const std::runtime_error&) {
+        inverse_failed = true;
+    }
+    require(inverse_failed, "Tekil matris tersi hata üretmedi");
 }
 
 void test_broadcasting() {
@@ -205,6 +255,42 @@ void test_serialization_and_print() {
     Matrix loaded = Matrix::loadBinary(filename);
     require_matrix(loaded, 2, 3, {1, 2, 3, 4, 5, 6});
     std::remove(filename.c_str());
+
+    const std::string truncated_filename = "matrix_truncated.bin";
+    {
+        std::ofstream file(truncated_filename, std::ios::binary);
+        const int rows = 2;
+        const int cols = 2;
+        const double value = 1.0;
+        file.write(reinterpret_cast<const char*>(&rows), sizeof(rows));
+        file.write(reinterpret_cast<const char*>(&cols), sizeof(cols));
+        file.write(reinterpret_cast<const char*>(&value), sizeof(value));
+    }
+    bool truncated_failed = false;
+    try {
+        Matrix::loadBinary(truncated_filename);
+    } catch (const std::runtime_error&) {
+        truncated_failed = true;
+    }
+    std::remove(truncated_filename.c_str());
+    require(truncated_failed, "Eksik binary veri hata üretmedi");
+
+    const std::string invalid_header_filename = "matrix_invalid_header.bin";
+    {
+        std::ofstream file(invalid_header_filename, std::ios::binary);
+        const int rows = -1;
+        const int cols = 2;
+        file.write(reinterpret_cast<const char*>(&rows), sizeof(rows));
+        file.write(reinterpret_cast<const char*>(&cols), sizeof(cols));
+    }
+    bool invalid_header_failed = false;
+    try {
+        Matrix::loadBinary(invalid_header_filename);
+    } catch (const std::runtime_error&) {
+        invalid_header_failed = true;
+    }
+    std::remove(invalid_header_filename.c_str());
+    require(invalid_header_failed, "Gecersiz binary boyutu hata üretmedi");
 
     Console console;
     original.print(console);

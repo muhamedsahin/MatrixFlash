@@ -4,6 +4,11 @@
 #include <functional>
 #include <numeric>
 
+void Matrix::relu() {
+    std::transform(data.begin(), data.end(), data.begin(),
+                   [](double value) { return std::max(0.0, value); });
+}
+
 // =========================================================
 // SOFTMAX - SAYISAL KARARLILIK
 // ---------------------------------------------------------

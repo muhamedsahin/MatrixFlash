@@ -25,9 +25,9 @@ src/main.cpp               Manuel deneme uygulaması
 Kaynak dosyaları sorumluluklarına göre ayrılmıştır:
 
 - `Matrix.cpp`: yaşam döngüsü, erişim, kopyalama ve boyut bilgileri
-- `MatrixArithmetic.cpp`: toplama, çıkarma, matris ve element bazlı çarpma
-- `MatrixActivation.cpp`: softmax işlemleri
-- `MatrixTransforms.cpp`: identity, ones, zeros ve flatten
+- `MatrixArithmetic.cpp`: toplama, çıkarma, matris, element bazlı ve skaler çarpma
+- `MatrixActivation.cpp`: softmax ve ReLU işlemleri
+- `MatrixTransforms.cpp`: identity, ones, zeros, flatten, transpose ve randomize
 - `MatrixStatistics.cpp`: ortalama, norm, trace ve negate
 - `MatrixInverse.cpp`, `MatrixDeterminant.cpp`: ileri seviye kare matris işlemleri
 - `MatrixMerging.cpp`: slice ve concat işlemleri
@@ -91,6 +91,13 @@ Yeni bir özellik eklerken:
 2. Uygulamayı ilgili `src/Matrix*.cpp` dosyasına koy.
 3. Davranış testini `tests/MatrixTests.cpp` içine ekle.
 4. Build ve CTest çalıştır.
+
+## Dokümantasyon sitesi
+
+Kütüphanenin kullanımını, matris matematiğini, API referansını ve etkileşimli örnekleri görmek için:
+
+- [MatrixFlash dokümantasyonunu aç](docs/index.html)
+- Siteyi doğrudan tarayıcıda açabilir veya `docs` klasörünü herhangi bir statik web sunucusuyla yayınlayabilirsiniz.
 
 ## Lisans
 

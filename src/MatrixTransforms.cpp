@@ -1,5 +1,6 @@
 #include "Matrix/Matrix.hpp"
 #include <algorithm>
+#include <random>
 #include <stdexcept>
 
 Matrix Matrix::identity(int size) {
@@ -41,4 +42,27 @@ Matrix Matrix::zeros(int rows, int cols) {
 void Matrix::flatten() {
     cols = rows * cols;
     rows = 1;
+}
+
+Matrix Matrix::transpose() const {
+    Matrix result(cols, rows);
+    for (int row = 0; row < rows; ++row) {
+        for (int col = 0; col < cols; ++col) {
+            result.data[col * rows + row] = data[row * cols + col];
+        }
+    }
+    return result;
+}
+
+void Matrix::randomize(double min_value, double max_value) {
+    if (min_value > max_value) {
+        throw std::invalid_argument("Rastgele deger araligi gecersiz!");
+    }
+
+    std::random_device device;
+    std::mt19937 generator(device());
+    std::uniform_real_distribution<double> distribution(min_value, max_value);
+    for (double& value : data) {
+        value = distribution(generator);
+    }
 }

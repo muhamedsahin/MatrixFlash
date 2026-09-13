@@ -53,6 +53,7 @@ public:
     // 3. TEMEL İŞLEMLER (4 İŞLEM)
     // ==========================================
     Matrix multiply(const Matrix& Other_Matrix) const;
+    Matrix multiplyScalar(double scalar) const;
     Matrix add(const Matrix& Other_Matrix) const;
     Matrix subtract(const Matrix& Other_Matrix) const;
     Matrix elementwiseMultiply(const Matrix& Other_Matrix) const;
@@ -73,7 +74,10 @@ public:
     // ==========================================
     void softmax();
     Matrix NewSoftMax() const;
+    void relu();
     void flatten();
+    Matrix transpose() const;
+    void randomize(double min_value = -0.1, double max_value = 0.1);
 
     // ==========================================
     // 6. MATRİS OLUŞTURUCULAR (FACTORY)
