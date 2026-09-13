@@ -29,6 +29,26 @@ target_include_directories(MatrixLib
 	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../Console
 )
 
+# ==========================================================
+# HIZ / OPTİMİZASYON
+# ----------------------------------------------------------
+# Debug harici build'lerde en yüksek performans için agresif
+# optimizasyon aktifleştirilir:
+#   -O3            : tam optimizasyon
+#   -march=native  : hedef işlemcinin komut seti (AVX/FMA...)
+#   -funroll-loops : sıcak iç döngüleri aç
+# NOT: -ffast-math KULLANILMAZ. Kayan nokta hassasiyeti (softmax,
+# inverse, determinant vb.) korunmalıdır.
+# Taşınabilirlik isterseniz -march=native satırını yorumlayın.
+# ==========================================================
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	add_compile_options(-funroll-loops)
+	if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+		add_compile_options(-O3)
+		add_compile_options(-march=native)
+	endif()
+endif()
+
 add_executable(MatrixApp src/main.cpp)
 
 target_link_libraries(MatrixApp PRIVATE MatrixLib)
@@ -48,4 +68,3 @@ if (BUILD_TESTING)
 endif()
 
 add_subdirectory(examples)
-

@@ -24,10 +24,8 @@ Matrix Matrix::Inverse() const {
     std::vector<int> pivot(n);
     std::vector<double> result(n * n, 0.0);
 
-    // 3. Matrisi kopyala
-    for (int i = 0; i < n * n; ++i) {
-        LU[i] = this->data[i];
-    }
+    // 3. Matrisi kopyala (döngü yerine blok memcpy - daha hızlı)
+    std::memcpy(LU.data(), this->data.data(), (size_t)n * n * sizeof(double));
 
     // ============================================
     // PHASE 1: LU DECOMPOSITION (Doolittle Algorithm)
@@ -92,63 +90,54 @@ Matrix Matrix::Inverse() const {
 
     // ============================================
     // PHASE 2: FORWARD & BACKWARD SUBSTITUTION
-    // Her sütun için ayrı ayrı çöz (Parallel!)
+    // Her sütun için ayrı ayrı çöz.
+    // Performans: b/y/x tamponlarını döngü dışına çekerek
+    // gereksiz n× allocation maliyetinden kurtulduk.
     // ============================================
 
-    // Birim matris oluştur (sonucu burada saklayacağız)
-    for (int i = 0; i < n; ++i) {
-        result[i * n + i] = 1.0;
-    }
+    // Tek seferlik çalışma tamponları (her sütun için yeniden yok!)
+    std::vector<double> b(n);
+    std::vector<double> y(n);
+    std::vector<double> x(n);
 
-    // Her sütunu paralel çöz
+    // Her sütunu çöz
     for (int col = 0; col < n; ++col) {
-        std::vector<double> b(n, 0.0);
+        std::fill(b.begin(), b.end(), 0.0);
         b[pivot[col]] = 1.0; // Permutation uygulanmış birim vektör
 
         // Forward substitution: L * y = b
-        std::vector<double> y(n);
         for (int i = 0; i < n; ++i) {
             double sum = 0.0;
+            const double* lu_row = &LU[i * n];
             for (int j = 0; j < i; ++j) {
-                sum += LU[i * n + j] * y[j];
+                sum += lu_row[j] * y[j];
             }
             y[i] = b[i] - sum;
         }
 
         // Backward substitution: U * x = y
-        std::vector<double> x(n);
         for (int i = n - 1; i >= 0; --i) {
             double sum = 0.0;
+            const double* lu_row = &LU[i * n];
             for (int j = i + 1; j < n; ++j) {
-                sum += LU[i * n + j] * x[j];
+                sum += lu_row[j] * x[j];
             }
-            x[i] = (y[i] - sum) / LU[i * n + i];
+            x[i] = (y[i] - sum) / lu_row[i];
         }
 
-        // Sonucu yerleştir
+        // Sonucu sütun olarak yerleştir
         for (int i = 0; i < n; ++i) {
             result[i * n + col] = x[i];
         }
     }
 
     // ============================================
-    // PHASE 3: Cache-Optimized Matrix Copy
+    // PHASE 3: Sonucu Matrix nesnesine taşı
+    // result ve inv satır-major ardışık olduğu için
+    // tek blok memcpy yeterlidir (en hızlı kopya).
     // ============================================
     Matrix inv(n, n);
-
-    // Block-based copy (cache-friendly)
-    for (int i = 0; i < n; i += BLOCK_SIZE) {
-        for (int j = 0; j < n; j += BLOCK_SIZE) {
-            int i_max = std::min(i + BLOCK_SIZE, n);
-            int j_max = std::min(j + BLOCK_SIZE, n);
-
-            for (int ii = i; ii < i_max; ++ii) {
-                for (int jj = j; jj < j_max; ++jj) {
-                    inv.at(ii, jj) = result[ii * n + jj];
-                }
-            }
-        }
-    }
+    std::memcpy(inv.data.data(), result.data(), (size_t)n * n * sizeof(double));
 
     return inv;
 }

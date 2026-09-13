@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <algorithm>
+#include <cstring>
 #include "Matrix/Matrix.hpp"
 
 double Matrix::determinant() const {
@@ -37,10 +38,9 @@ double Matrix::determinant() const {
     std::vector<double> LU(n * n);
     int sign = 1; // Determinant işareti (satır takası sayısı)
 
-    // Matrisi kopyala
-    for (int i = 0; i < n * n; ++i) {
-        LU[i] = this->data[i];
-    }
+    // Matrisi kopyala (blok memcpy - döngüden hızlı)
+    std::memcpy(LU.data(), this->data.data(), (size_t)n * n * sizeof(double));
+    double* A = LU.data();
 
     // LU Ayrıştırması (Gaussian Elimination with Partial Pivoting)
     for (int k = 0; k < n; ++k) {
@@ -49,7 +49,7 @@ double Matrix::determinant() const {
         int maxRow = k;
 
         for (int i = k; i < n; ++i) {
-            double val = std::abs(LU[i * n + k]);
+            double val = std::abs(A[i * n + k]);
             if (val > maxVal) {
                 maxVal = val;
                 maxRow = i;
@@ -64,8 +64,8 @@ double Matrix::determinant() const {
         // Satır takası gerekli mi?
         if (maxRow != k) {
             sign = -sign; // İşareti değiştir
-            double* row_k = &LU[k * n];
-            double* row_max = &LU[maxRow * n];
+            double* row_k = &A[k * n];
+            double* row_max = &A[maxRow * n];
 
             for (int j = 0; j < n; ++j) {
                 std::swap(row_k[j], row_max[j]);
@@ -73,16 +73,19 @@ double Matrix::determinant() const {
         }
 
         // Eliminasyon - altındaki satırları sıfırla
-        double pivot = LU[k * n + k];
+        const double* row_k = &A[k * n];
+        double pivot = row_k[k];
         double inv_pivot = 1.0 / pivot; // Bölme yerine çarpma (HIZ!)
 
         for (int i = k + 1; i < n; ++i) {
-            double factor = LU[i * n + k] * inv_pivot;
-            LU[i * n + k] = factor; // L matrisini sakla
+            const int base = i * n;
+            double factor = A[base + k] * inv_pivot;
+            A[base + k] = factor; // L matrisini sakla
 
-            // U matrisini güncelle
+            // U matrisini güncelle (row-major ardışık erişim)
+            double* row_i = &A[base];
             for (int j = k + 1; j < n; ++j) {
-                LU[i * n + j] -= factor * LU[k * n + j];
+                row_i[j] -= factor * row_k[j];
             }
         }
     }
@@ -92,7 +95,7 @@ double Matrix::determinant() const {
     double det = static_cast<double>(sign);
 
     for (int i = 0; i < n; ++i) {
-        det *= LU[i * n + i]; // U'nun köşegeni
+        det *= A[i * n + i]; // U'nun köşegeni
     }
 
     return det;

@@ -14,13 +14,20 @@ LUDecomposition Matrix::lu_decompose() const {
     Matrix U = this->clone();       // Başlangıçta U = A
     Matrix P = Matrix::identity(n); // Permütasyon matrisi
 
+    // at() sınır kontrolünü iç döngüde tekrar etmemek için ham pointer'lar
+    double* Ld = L.data.data();
+    double* Ud = U.data.data();
+    double* Pd = P.data.data();
+    const int stride = n;
+
     for (int k = 0; k < n - 1; ++k) {
         // Partial Pivoting
         int maxRow = k;
-        double maxVal = std::abs(U.at(k, k));
+        double maxVal = std::abs(Ud[k * stride + k]);
         for (int i = k + 1; i < n; ++i) {
-            if (std::abs(U.at(i, k)) > maxVal) {
-                maxVal = std::abs(U.at(i, k));
+            double v = std::abs(Ud[i * stride + k]);
+            if (v > maxVal) {
+                maxVal = v;
                 maxRow = i;
             }
         }
@@ -29,17 +36,29 @@ LUDecomposition Matrix::lu_decompose() const {
 
         if (maxRow != k) {
             // U, L ve P'nin k. satırından sonrasını takas et
-            for (int j = k; j < n; ++j) std::swap(U.at(k, j), U.at(maxRow, j));
-            for (int j = 0; j < k; ++j) std::swap(L.at(k, j), L.at(maxRow, j));
-            for (int j = 0; j < n; ++j) std::swap(P.at(k, j), P.at(maxRow, j));
+            double* uk = &Ud[k * stride];
+            double* um = &Ud[maxRow * stride];
+            for (int j = k; j < n; ++j) std::swap(uk[j], um[j]);
+
+            double* lk = &Ld[k * stride];
+            double* lm = &Ld[maxRow * stride];
+            for (int j = 0; j < k; ++j) std::swap(lk[j], lm[j]);
+
+            double* pk = &Pd[k * stride];
+            double* pm = &Pd[maxRow * stride];
+            for (int j = 0; j < n; ++j) std::swap(pk[j], pm[j]);
         }
 
         // Eliminasyon
+        double inv_piv = 1.0 / Ud[k * stride + k]; // bölme yerine çarpma
+        double* uk = &Ud[k * stride];
+
         for (int i = k + 1; i < n; ++i) {
-            double factor = U.at(i, k) / U.at(k, k);
-            L.at(i, k) = factor;
+            double factor = Ud[i * stride + k] * inv_piv;
+            Ld[i * stride + k] = factor;
+            double* ui = &Ud[i * stride];
             for (int j = k; j < n; ++j) {
-                U.at(i, j) -= factor * U.at(k, j);
+                ui[j] -= factor * uk[j];
             }
         }
     }

@@ -8,9 +8,15 @@
 Matrix Matrix::addBroadcast(const Matrix& other) const {
     if (other.rows == 1 && other.cols == this->cols) {
         Matrix result(this->rows, this->cols);
+        const double* a = this->data.data();
+        const double* b = other.data.data();
+        double* c = result.data.data();
+        const int cols = this->cols;
+
         for (int i = 0; i < this->rows; ++i) {
-            for (int j = 0; j < this->cols; ++j) {
-                result.data[i * this->cols + j] = this->data[i * this->cols + j] + other.data[j];
+            const size_t base = (size_t)i * cols;
+            for (int j = 0; j < cols; ++j) {
+                c[base + j] = a[base + j] + b[j]; // b satırı yayılır
             }
         }
         return result;
@@ -25,9 +31,14 @@ Matrix Matrix::addBroadcast(const Matrix& other) const {
 Matrix Matrix::multiplyBroadcast(const Matrix& other) const {
     if (other.rows == 1 && other.cols == cols) {
         Matrix result(rows, cols);
+        const double* a = data.data();
+        const double* b = other.data.data();
+        double* c = result.data.data();
+
         for (int row = 0; row < rows; ++row) {
+            const size_t base = (size_t)row * cols;
             for (int col = 0; col < cols; ++col) {
-                result.at(row, col) = at(row, col) * other.at(0, col);
+                c[base + col] = a[base + col] * b[col];
             }
         }
         return result;
