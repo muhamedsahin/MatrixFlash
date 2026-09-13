@@ -12,6 +12,8 @@ MatrixFlash tamamen ücretsizdir ve MIT Lisansı ile yayımlanmaktadır. Lisans�
 
 `src/main.cpp` örnek uygulamadır. Bu dosyayı tek başına `gcc` ile derlemeyin; kütüphane birden fazla kaynak dosyasından oluştuğu için CMake hedefini kullanın.
 
+[![Documentation](https://img.shields.io/badge/docs-live-brightgreen)](https://muhamedsahin.github.io/MatrixFlash/)
+
 ## Klasör yapısı
 
 ```text
