@@ -98,7 +98,7 @@ Yeni bir özellik eklerken:
 
 Kütüphanenin kullanımını, matris matematiğini, API referansını ve etkileşimli örnekleri görmek için:
 
-- [MatrixFlash dokümantasyonunu aç](docs/index.html)
+- [MatrixFlash dokümantasyonunu aç](https://muhamedsahin.github.io/MatrixFlash/)
 - Siteyi doğrudan tarayıcıda açabilir veya `docs` klasörünü herhangi bir statik web sunucusuyla yayınlayabilirsiniz.
 
 ## Lisans
