@@ -1,0 +1,13 @@
+function(add_matrix_example target source)
+    add_executable(${target} ${source})
+    target_link_libraries(${target} PRIVATE MatrixLib)
+    target_compile_features(${target} PRIVATE cxx_std_17)
+    if (MINGW)
+        target_link_options(${target} PRIVATE -static-libgcc -static-libstdc++)
+    endif()
+endfunction()
+
+add_matrix_example(MatrixExampleBasic basic_operations.cpp)
+add_matrix_example(MatrixExampleAiPipeline ai_pipeline.cpp)
+add_matrix_example(MatrixExampleAdvanced advanced_math.cpp)
+add_matrix_example(MatrixExampleStorage storage_and_merging.cpp)

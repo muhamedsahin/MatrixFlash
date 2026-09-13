@@ -1,0 +1,128 @@
+bir yapay zeka da en önemli şeylerden biriside matrislerdir bu kısımda kendi matrisimizi oluşturmak ve belkide küçük çaplı bir
+matris kütüpanesi oluşturmaya çalışacağız birlikte.
+
+
+Bir yapay zeka eğitim modelinde 2 boyutlu ve daha fazla boyutlu vektörler kullanılmaz bunun nedeni çok daha fazla kaynak
+yönetimidir bir noktanın 2 tane verisini saklamak yerine 1 tane verisini saklamak daha mantıklıdır bu sayede bellek yönetimi
+en düşük seviyeye gelir istenildiğinde o verinin verktör içindeki konum sırası ile tekrar 2 boyutlu hale getirilmesi mümkün olur
+bu sayede ihtiyacımız olmadığı kullanmadığımız noktaların 2. verisini saklayıp bellek tüketmek zorunda kalmayız buda kodumuzu daha
+hızlı ve performanslı hale getirir
+
+İki matrix neden çarpılır aslında bu bilinenin aslında bu yapay zeka alanında uzman olmak istiyen bir kişi için belki sorumlası
+gereken en önemli sorulardan birisi matrixler veri saklayan özel ojeler gibi düşünüle bilir şimdi normal toplama işlemi ve çarpma
+işlemi hakkında genel bir yargıda bulunalım aslında matematikde 4 temel işlem bulunmamaktadır aslında iki temel işlem vardır
+eğer bir sayıyı topluyorsanız örnek A ile B olsun bu iki sayıyı çıkarma işle aslında yeni bir operatör değildir
+B nin aslında sayı doğrusuna göre simetriği -B dir ve biz çıkarma işleminde aslında A sayısını -B sayısı ile toplarız
+bunun daha anlaşılır ve somut gösterimi olsun diye eksi diye aslında matematiksel olarak zorunlu olmayan bir operatör
+çıkmartılmıştır Aynı durum çarpma ilemi içinde geçerlidir aslında bir sayı düşünelim A ile B olsun A * B bu işlem vardır
+peki bölme işlemi nasıl gösterilir üstü 1 olacak şekilde alt kısıma B yazılır B sayısı artık bir kesire dönüşmüştür buda bir
+sayıdır ve çarpma işlemi yaparız bunun için A * 1/B sadece çarpma işlemi yaptık aslında peki aynı şey - için geçerliyse
++ diye bir operatör yoksa gerçekte sadece - ve çarpma operatörü varsa evet buda olası mümkün ama bir sayının önüne gerekmedikce
++ işareti koymayız yani pozitif neğatif kavramını anlamak için + gerek yoktur eğer çok istersek negatif bir sayının başına
+koyarız- işaretini buda matematiksel olarak + işaretinin - den daha önce olduğunu gösteriyor işin kısacası matrix işlemlerinde
+aslında toplama ile çarpma işlemlerini öğrenmek 4 işlemi öğrenmek gibidir yani çıkarma ve bölme kısımının ayrı bir yolu yok
+mantık aynıdır. Şimdi matrixlerde toplama kısımını açıklayalım aslında detaylı düşünüldüğünde biz genelde elma ve armutu toplamayız
+bunun nedeni her şey kendi türünde toplanır bizim toplamada yapacağımız iş eğer matrixin karşılkıklı yani üst üste gelen kısımları
+aynı tür iste toplama yapabiliriz mesela ben kendi matriximde 5 ekmek aldım arkadaşımın matrixinde arkadaşım 10 ekmek aldı bu işlem
+için direk ekmek sayılarını toplayabiliriz bu kısımda garip veya anlasılması zor bir durum yok matrixlerin karışılıklı türü görüldüğü
+gibi aynı. Peki çarpma kısımı içinde aynı durumu söyleye bilecekmiyiz aslında çarpmada biraz işler karışıyor ama endişelenmeyin örnekler
+üzerinden gidelim aynı tür iki veriyi biz matrixlerde çarpmayız yani çarpa biliriz fakat işimize yarmaz bu yüzden matrix çarpımının
+mantığını iyi anlamamız lazım matrix çarpımı aynı tür olmayan veriler üzerinde gerçekleştirilir nasıl yani? şöyle düşünelim bir
+kahve dükkanındayız elimizde bir menü fiyat matrix veri seti var birde bizim aldığımız ürünlerin miktarı matrix veri seti var ve parayı öndemek için
+Kasaya geldik ve istediğimiz veri seti aslında ücret matrix veri setti şimdi bu işi yapmamız için çarpma işlemine ihtiyacımız var mesela
+ben 5 kahve aldım bu aldığımız ürünlerin miktarı matrixsimizin içindeki veri matrixde şu yazıyor aslıda bu kişi kahveden 5 tane aldı peki bizim
+total ücreti öğrenmemiz için ne yapmamız gerekiyor tabikide kahvenin birim fiyatı ile çarpmamız lazım kahvenin birim fiyatı verisi ise meni fiyat matrix
+veri seti kısımında istediğimiz veriyi öğrenmek için ikisini çarpıp total sonuç matrixsine yazmamız lazım mantığı bu kısımda geliyor.
+hayal edelim şimdi [[5,6],[2,4]] ilk kısım kahve olsun ikinci kısım ise kurabiye olsun müşterimizin adı fatih olsun şimdi fatih bu matrix de gördüğünüz gibi
+5 kahve 6 kurabiye almış gözüküyor gayet güzel şimdi aynı şeyi ikinci müşteri faruk için bakalım faruk 2 tane kahve almış 4 kurabiye almış şimdi kafamızda bu
+kısımın tam anlamıyla oturduğunu düşünüyorum şimdi birde menü matriximizi ayarlıyalım [70,24] ilk veri kahve birim fiyat verimiz ikinci veri ise
+kurabiye birim fiyat verisi şimdi artık ikisininde birim fiyatlarını ve aldığımız fiyatları biliyoruz sıra hesap hazırlama kısımında bu iki matrixsin çarpımından
+yeni bir hesap matrixi çıkacak hadi çarpalım evet sonuç matrixi böyle olacak [(70.5+24.6),(70.2+24.4)] Gördüğünüz gibi bude çarpım sonuç matriximiz
+çarpan matrixin col sayısı çarpılan matrixin row sayısına kısacası eşit olmak zorunda.
+
+
+Bugün gerekli matrix çarpım kodlarını hazırladım ve eklenmesi gereken 5 temel özelik daha var bunlar
+----------------------------------------------------------------------------------------------------
+1)Matris Toplama (add): Gradient Descent'te ağırlıkları güncellerken W = W - (lr * grad) yapacağız. Bunun için matrisleri toplayıp çıkarabilmeliyiz.
+2)Skaler Çarpım (multiplyScalar): Learning rate'i tüm gradient matrisiyle tek seferde çarpmak için gereklidir.
+3)Devrik Matris (transpose): Backpropagation (Geri Yayılım) algoritmasında hata matrisini ağırlık matrisine çarpabilmek için matrisin yerini (satır/sütun) değiştirmek zorundayız.
+4)Rastgele Başlatma (randomize): Yapay zeka ağırlıkları 0 ile başlayamaz (öğrenemez). Küçük rastgele sayılarla başlamalıdır.
+5)Aktivasyon Fonksiyonu (relu): Yapay zekanın "doğrusal olmayan" (non-linear) şeyleri öğrenmesini sağlayan, matrisin içindeki negatif sayıları 0 yapan fonksiyon.
+
+
+genel hatları ile kütüphaneyi bitirdim kütphane şuan cpu için optimize edilmiş bir şekilde çalışıyor elimden geldiğince bir sürü özelik ekleyip gerekli işlemleri en pro şekilde 
+yapmaya çalıştım. projede bir çok matrix işlemi bulunmakta amacımız hazır bir kütüphane kullanmadan olabildiğince en performanslı kodu üretmekti bunu başarmak için klasik 
+metodalardan çok modern matematiğin alt yapısı ve kullandığımız c++ dilinin büttün sınırlarını zorlayarak en performanslı ve optimizasyonu yüksek kodu yapmaya çalıştık açıkcası
+dürüst olmak gerekise belki dünyada 1 numara olabilecek kapasitede olmayan bir kütüpahane olmayabilir genel olarak cpu da en güçlü olan kütüpahaneler sadece c++ ile değil C ve 
+assembly gibi dilleri birlikte kullanarak optimizasyonu çok çok üst seviyelere çıkartıyor bizim buradaki ana amacımız en hızlı kütüphaneyi yazmaktan çok sizin bir öğrencisinin 
+matrixlerde işlemler bir yazılım dili ile nasıl yapılırı kafanızda otuturmaya çalıştır bu yazılar aslında benim günlük raporlarım gibidir ve içinde o gün öğrendiklerim yazar bu
+kısımdan sonra daha düzenli detaylı olarak size açıklamalarını yapmış olacağım yani kütüphane sadece yaptık oldu bitti olayından çok öğretmekde amaçlıdır
+
+
+
+//--------------------------------------------====================--------------------------------------/
+Matrix nedir?
+ 
+ Matrix aslında verileri bilgileri sakladığımız bir tablo gibidir kısa ve net tanımı bu şekildedir benim nezlimde
+ matrix dediğimiz şeyi istersek linear denklemlerin ifade edilmesinde kullanabiliriz veya günlük hayatımızdaki bir
+ uzayı ifade etmek için veya en basitinden vektörleri ifade etmek için bile kullanabiliriz aslında şölye bakmak lazım
+ biz matrix diye üretiğimiz şey aslında bir çanta ama o çantayı hangi amaçla nasıl kullanacağımızı biz belirliyoruz
+ yani istersek veri kaydetmekte istersek çok büyük toplama çarpma işlemleri için istersek geometrik dönüşümler için 
+ bu tamamen bizim isteklerimize kalmış bir şey matrix dediğimiz şey aslında bir kalıp ve matrix konusunu öğrenirken
+ tek taraflı öğrenmek yerine bu ifadenin birden fazla işe yaradığını ve her iş için özel algoritmalar ve formüller olduğunu
+ unutmamak lazım yani bir işlem yapacaksanız ilk önce ne yapacağınızı aklınızda güzel bir şekilde otururmanız daha 
+ sonrasında ise bunun için ben matrix ifadesini nasıl kullanabilirim sorusuna yanıt aramanız ve bulduğunuz yanıta göre
+ gerekli işlemleri yapmanız gerekmektedir tabikide zaman içerisinde bazı şeylerin matrixler ile ifade edilmeleri atrmıştır
+ bu aslında çok çok uzun bir şey yazmak yerine kısa bir şekilde ifade etmek gibidir ve kısa şekilde ifade etmek bize 
+ sanılanın aksine bazı çözümleri çok karmaşık bir beyin fırtınası yerine temiz bir şekilde görüğ keşfetmemizi sağlamıştır
+
+Matrix genel özelikler
+
+ matrixlerin belirli bir uzunluk ve boyları olur bunu bir raflı dolaba benzetebiliriz aslında evet belirli bir boy ve uzunluk
+ var ve bunlar birleşerek sanki 2D bir uzay gibi görünürler bizim için x y ekseni gibi düşüne biliriz x y eksenimiz var fakat
+ normal kordinat sisteminden farklı bir şekilde bilinenin aksine her noktanın 3. bir değeride olabiliyor yani x,y,değer bu 
+ matrix için önemli bir özelik genel olarak matrix oluşturmak için row col sayıları lazım mesela 2x3 bir matrix de 2 sütun 3 satır
+ vardır ve totalde veri girebileceğimiz 6 tane boş alan vardır tabikide istersek 1x6 da olabilirdi bu bizim hangi ihtiyacımıza 
+ göre matrixsimizi oluşturup seçebileceğimize göre değişir yani amacımız 6 tane veri girmek değil 6 tane veriyi amacımıza 
+ hizmet edebilecek şekilde doğru ve kusursuz bir şekilde matrix alanlarına yerleştirip üzerinde işlem yapabilmekte gizlidir
+
+Matrix işlemleri
+ 
+ Bir çok işlem yapabiliriz matrixlerde fakat genel olarak matrixlerde biz daha çok toplama çıkartma çarpma bölme gibi 
+ işlemleri daha sık kullanıp tercih etmekteyiz tabikide bunları daha çok kullanmamız başka bir şeye ihtiyacımız yok 
+ kanısını ortaya çıkarmaz. bir matrisin tersini alma veya determinantı veya bölmek gibi bizim matrixler üzerinde
+ yaptığımız aslında bir çok işlem vardır bunlarında tabikide kendilerine has amaçları vardır hepsini teker teker öğrendikler
+ ile tane tane anlatacağım ama şunu unutmamak lazım ki matrixleri kendi istediğimiz gibi her zaman kullanamaıyoruz
+ yani yapılan işlemler her ne kadar esnek görünse bile belirli bir standarda taliptir bu sizi yanıltmasın kurallar uymalıyız
+
+Birim Matrix nedir?
+ 
+ birim matrix row yani satır cols yani sütun sayısı birbirlerine eşit olan matrixlere denilen özel bir adtır tabikide kullanım,
+ alanına göre birim matrixlerin sol üst taraftan sağ alt tarafa kadar olan köşeğeninde 1 ler ve diğer kalan kısımların 0 olup 
+ az önceki kuralı sağlayan matrixlere birim matrix denir
+
+Pc de Optimizaston performans odaklı matrix üretme.
+
+ biz aslında 2 boyutlu uzayları veya daha fazla boyutlu şeyleri optimizasyon açısından tek boyutlu vektöre koyarak hayal ederiz
+ nasıl yani 1 boyutlu vektör ile 2 boyutlu bir matrixsi nasıl anlamlandırabilirz evet asıl olay bu kısımda başlıyor bizim pc de 
+ 2 veya daha fazla boyutlu bir vektör oluşturmamız gereksiz yük demekir özelikle bu vektör bir matrix ifade edecekse matematik
+ ve pc matrix ifadeleri için çok boyutlu vektör kullanmanın aslında sanılandan saçma olduğunu gösteriyor. bir vektör gibi çok
+ boyutlu kullanım bir matrixden daha büyük işler için kullanılır bu yüzden çok boyutlu vektör yerine en mantıklısı tek boyutlu
+ vektörün nimetlerinden faydalanmak gibi duruyor şuanlık. yaptığımız iş şu bir boyutlu bir vektörün üzerine bütün sayıları
+ koyuruyorz güzel bir şekilde elimizde olan bilgi tamamen şu biz her colsun tam katı sıra numaralı sayıya geldiğimizde artık yeni
+ bir satıra geçmemiz gerektiğini anlıyoruz mesela 2x3 bir matrix olsun tek boyutta 6 tane yan yana sayı demek sırasıyla ilerliyoruz
+ 1. sayı 2. sayı 3. sayı evet 3 sayısı 3 ün bir tam katı ve yeni bir satıra yani aşşağıdaki satıra geçme vakti geldi diyor ve geçiyoruz
+ bu şekilde bütün vektörü elimizdeki formüller ile tarayıp bizim yerimizde bilgisayarın hayal etmesini sağlıyoruz kütüphane at diye
+ bir fonksyon ürettik isterseniz o fonksyonun yapısını incelleyerek nasıl bir boyutlu bir vektörü matrix satır sütun şeklinde hayal
+ ettiğini matematiksel ve yazılımsal olarak anlamış olursunuz. bu sayede çok çok hızlı ve en performanslı şekilde kendi matrixsimizi
+ oluşturmak mümkün oluyor
+
+Kütüpahne için taktikler
+ eğer kütüphaneyi geliştirmek istiyorsanız veya anlamak istiyorsanız yapmanız gerek en yegane şey ilk önce hpp dosyasını açın hpp dosyası
+ size kütüphanenin mimarisi hakkında çok fazla bilgi verecektir ve geliştirmek veya eklemek istediğiniz özelikleri hpp dosyasındaki gerekli
+ bölümlerdeki açıklamalar ile hangi dosyaya güncellemenizi ekliyeceğinizi anlıyabilirsiniz geriye kalan güzel açıklamalar ile kütüphaneyi güncellemek
+
+
+/=-------------------------Ben kimim---------------------=/
+Ben bu yıl btü pc mühendisliğini kazanmış yazılım alanın oldukca ilgili ve son zamanlarda cip teknolojisi
+ve ai ağırlıklı araştırmalar yapan birisiyim. Username = MFŞ
